@@ -1,0 +1,98 @@
+# filename main.py
+
+<Manager>:
+	id: screen_manager
+	
+	main_screen: main_screen
+	game_screen: game_screen
+	
+	MainScreen:
+		id: main_screen
+		name: "home"
+		manager: screen_manager
+	
+	GameScreen:
+		id: game_screen
+		name: "game"
+		manager: screen_manager
+	
+<GameScreen>:
+	text_guess: text_guess
+	progress_bar: progress_bar
+	input_to_test: input_to_test
+	
+	BoxLayout:
+		orientation: "horizontal"
+		Splitter:
+			sizable_from: 'right'
+			min_size: root.size[0]/2
+			max_size: root.size[0]/2
+			Label:
+				id: text_guess
+				text: ""
+		FloatLayout:
+			orientation: "vertical"
+			BoxLayout:
+				orientation: "horizontal"
+				pos_hint: {"right": 1, "top": 0.5}
+				size_hint_y: None
+				height: 30
+				TextInput:
+					id: input_to_test
+					multiline: False
+					focus: True
+					on_text_validate: root.validate()
+			ProgressBar:
+				id: progress_bar
+				size_hint_y: None
+				height: 30
+				pos_hint: {"right": 1, "top": 0.45}
+				max: 100
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+			path: "./"
+			filters: ["*.csv"]
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+				
+	
+<MainScreen>:
+	text_input: text_input
+
+	BoxLayout:
+		orientation: "vertical"
+		Label:
+			text: "Flashcard Trainer"
+		BoxLayout:
+			orientation: "horizontal"
+			size_hint_y: None
+			height: 30
+			Label:
+				text: "CSV:"
+			TextInput:
+				id: text_input
+				readonly: True
+				multiline: False
+			Button:
+				text: "..."
+				on_release: root.show_load()
+		Button:
+			size_hint_y: None
+			text: "Play"
+			height: 30
+			on_release: root.manager.current = "game"
